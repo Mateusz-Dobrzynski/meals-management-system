@@ -68,8 +68,13 @@ class RegistrationServiceTests {
         String responseBody = new ResponseBody(HttpStatus.BAD_REQUEST).getResponseBody();
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo("/register"))
-                        .willReturn(WireMock.aResponse().withStatus(HttpStatus.BAD_REQUEST.value()).withBody(responseBody)));
-        ResponseEntity<String> response = restTemplate.postForEntity(requestUrl, requestBody, String.class);
+                        .willReturn(WireMock.aResponse()
+                                .withStatus(HttpStatus.BAD_REQUEST.value())
+                                .withBody(responseBody)));
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                requestUrl,
+                requestBody,
+                String.class);
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
     }
 
@@ -87,8 +92,13 @@ class RegistrationServiceTests {
         String responseBody = new ResponseBody(HttpStatus.BAD_REQUEST).getResponseBody();
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo("/register"))
-                        .willReturn(WireMock.aResponse().withStatus(HttpStatus.BAD_REQUEST.value()).withBody(responseBody)));
-        ResponseEntity<String> response = restTemplate.postForEntity(requestUrl, requestBody, String.class);
+                        .willReturn(WireMock.aResponse()
+                                .withStatus(HttpStatus.BAD_REQUEST.value())
+                                .withBody(responseBody)));
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                requestUrl,
+                requestBody,
+                String.class);
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value());
 
     }
@@ -106,8 +116,13 @@ class RegistrationServiceTests {
         String responseBody = new ResponseBody(HttpStatus.OK).getResponseBody();
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo("/register"))
-                        .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value()).withBody(responseBody)));
-        ResponseEntity<String> response = restTemplate.postForEntity(requestUrl, requestBody, String.class);
+                        .willReturn(WireMock.aResponse()
+                                .withStatus(HttpStatus.OK.value())
+                                .withBody(responseBody)));
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                requestUrl,
+                requestBody,
+                String.class);
         assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
     }
 }

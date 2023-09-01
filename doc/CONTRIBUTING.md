@@ -57,7 +57,7 @@ To customize API documentation use `@Bean` and `@Configuration` annotations.
 
 ### Reading the API documentation
 To access the API documentation turn the server online and open
-http://localhost:8080/swagger-ui.html in your browser.
+http://localhost:8080/swagger-ui/swagger-ui/index.html in your browser.
 
 OpenAPI provides a feature which allows user to send POST, GET, DELETE and PUT methods
 and receive a response. To access this feature, simply find desired endpoint
