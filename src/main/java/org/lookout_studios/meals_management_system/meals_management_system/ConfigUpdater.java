@@ -43,8 +43,8 @@ public class ConfigUpdater {
 
             //Remove before review
             System.out.println("Updated spring.mail.username with email: " + email);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 }

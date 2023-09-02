@@ -5,14 +5,17 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
-public class RegistrationService {
+public class RegistrationService {   
     private String invalidEmailMessage = "Invalid email address";
     private String invalidPasswordMessage = "Invalid password";
     private String alreadyRegisteredMessage = "This user already exists";
@@ -70,7 +73,7 @@ public class RegistrationService {
                     "%s is not registered",
                     userEmail));
         } catch (Exception exception) {
-            throw exception;
+                throw exception;
         }
         log.info(String.format(
                 "Registering new user with email '%s'",
@@ -80,6 +83,8 @@ public class RegistrationService {
         log.info(String.format(
                 "User with email %s registered successfully",
                 userEmail));
+                //
+                sendEmail();
         return new ResponseEntity<String>(
                 new ResponseBody(HttpStatus.OK).getResponseBody(), HttpStatus.OK);
     }
@@ -122,5 +127,21 @@ public class RegistrationService {
             throw exception;
         }
         return match;
+    }
+
+    //TO-DO: Remove dependencies from application.properties
+    //       Rebuild ConfigUpdater
+    public void sendEmail() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MailConfig.class)) {
+            EmailService emailService = context.getBean(EmailService.class);
+
+            String to = "hubert.borysowski3@gmail.com";
+            String subject = "Temat wiadomości";
+            String text = "Treść wiadomości";
+
+            emailService.sendEmail(to, subject, text);
+        } catch (BeansException e) {
+            e.printStackTrace();
+        }
     }
 }
