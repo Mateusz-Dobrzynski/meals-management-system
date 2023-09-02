@@ -8,7 +8,22 @@ CREATE TABLE `users` (
   `userId` INT AUTO_INCREMENT NOT NULL,
   `isVerified` boolean NOT NULL,
   `registrationToken` varchar(100) NOT NULL,
+  `refreshToken` varchar(100) NOT NULL,
   PRIMARY KEY (`userId`)
+);
+
+CREATE TABLE `userToken`(
+`userId` INT AUTO_INCREMENT NOT NULL,
+`userToken` varchar(100) NOT NULL,
+`exporationDate` date,
+FOREIGN KEY (userId) REFERENCES users(userId)
+);
+
+CREATE TABLE `refreshToken`(
+`userId` INT AUTO_INCREMENT NOT NULL,
+`refreshToken` varchar(100) NOT NULL,
+`exporationDate` date,
+FOREIGN KEY (userId) REFERENCES users(userId)
 );
 
 CREATE TABLE `fridges` (

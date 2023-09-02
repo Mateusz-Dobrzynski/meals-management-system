@@ -151,4 +151,24 @@ public class DatabaseService {
         }
         connection.close();
     }
+
+    public boolean requestValidyCheck(int userId,String userToken, String refreshToken)
+    {
+        Connection connection = establishConnection();
+        try {
+        ResultSet stored_user_token = executeSelectQuery(
+                    String.format(
+                            "SELECT userToken FROM userToken u WHERE userId = \"%s\";",
+                            userId),
+                    connection);
+
+                    System.out.println(stored_user_token);
+        }catch (Exception exception)
+        {
+            
+        }
+        
+        return false;
+
+    }
 }

@@ -1,5 +1,5 @@
 {
-    "databaseJdbcUrl": "jdbc:mysql://localhost:3306/mms_database",
+    "databaseJdbcUrl": "jdbc:mysql://localhost:8012/mms_database",
     "databaseUsername": "root",
     "databasePassword": ""
 }
