@@ -6,7 +6,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,38 +17,13 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.client.ResponseErrorHandler;
-import org.springframework.web.client.RestTemplate;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class VerificationServiceTest {
 
-    private RestTemplate restTemplate = ignoreHttpErrors();
-
-    /**
-     * This method ensures that rest template does not throw exceptions when http
-     * responses are other than 200 (OK)
-     * 
-     * @return A RestTemplate object with an error handler which does not throw
-     *         exceptions when encountering errors
-     */
-    private RestTemplate ignoreHttpErrors() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(new ResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) throws IOException {
-                return false;
-            }
-
-            @Override
-            public void handleError(ClientHttpResponse response) throws IOException {
-            }
-        });
-        return restTemplate;
-    }
+    private TestRestTemplate restTemplate = new TestRestTemplate();
 
     @InjectMocks
     private DatabaseService database;

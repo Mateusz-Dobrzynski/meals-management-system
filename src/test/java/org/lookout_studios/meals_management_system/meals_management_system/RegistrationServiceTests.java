@@ -24,22 +24,12 @@ import net.minidev.json.JSONObject;
 class RegistrationServiceTests {
 
     static WireMockServer wireMockServer = new WireMockServer();
-    private static RestTemplate restTemplate = new RestTemplate();
+    private static TestRestTemplate restTemplate = new TestRestTemplate();
 
     @BeforeAll
     public static void beforeAll() {
         WireMock.configureFor(8080);
         wireMockServer.start();
-        restTemplate.setErrorHandler(new ResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) throws IOException {
-                return false;
-            }
-
-            @Override
-            public void handleError(ClientHttpResponse response) throws IOException {
-            }
-        });
     }
 
     @AfterAll
