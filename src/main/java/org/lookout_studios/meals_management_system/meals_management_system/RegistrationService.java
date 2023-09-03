@@ -21,6 +21,8 @@ public class RegistrationService {
     private String alreadyRegisteredMessage = "This user already exists";
     private String validPasswordPattern = ".{8,}";
     private String validEmailPattern = "^[\\w+-]+(\\.[\\w+-]+)*[\\.]?[a-zA-Z0-9]@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+    private static String emailSubject = "Meals Managament System E-mail Verification";
+    private String emailMessage = "To verify your e-mail click on the provided link: " + "http://localhost:8080/verify?userId=24&registrationToken=null"; //TO-DO: The verification link must be created automatically.
 
     Logger log = LoggerFactory.getLogger(RegistrationService.class);
 
@@ -83,8 +85,9 @@ public class RegistrationService {
         log.info(String.format(
                 "User with email %s registered successfully",
                 userEmail));
-                //
-                sendEmail();
+        sendVerificationEmail(user.getEmail(), emailSubject, emailMessage);
+        log.info(String.format(
+            "Verification e-mail has been sent"));
         return new ResponseEntity<String>(
                 new ResponseBody(HttpStatus.OK).getResponseBody(), HttpStatus.OK);
     }
@@ -131,17 +134,26 @@ public class RegistrationService {
 
     //TO-DO: Remove dependencies from application.properties
     //       Rebuild ConfigUpdater
-    public void sendEmail() {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MailConfig.class)) {
+
+    /**
+     * Sends an e-mail message so user can be verified
+     * 
+     * @param email E-mail address to which the message will be sent
+     * @param emailSubject A subject of e-mail
+     * @param message A message containing verification link
+     */
+    public void sendVerificationEmail(String email, String emailSubject, String message) {
+        try (AnnotationConfigApplicationContext 
+        context = new AnnotationConfigApplicationContext(MailConfig.class)) {
             EmailService emailService = context.getBean(EmailService.class);
 
-            String to = "hubert.borysowski3@gmail.com";
-            String subject = "Temat wiadomości";
-            String text = "Treść wiadomości";
+            String to = email;
+            String subject = emailSubject;
+            String text = message;
 
             emailService.sendEmail(to, subject, text);
-        } catch (BeansException e) {
-            e.printStackTrace();
+        } catch (BeansException exception) {
+            exception.printStackTrace();
         }
     }
 }
