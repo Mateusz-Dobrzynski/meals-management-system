@@ -194,4 +194,7 @@ public class DatabaseService {
         }
         connection.close();
     }
+
+    public void createNewFridge(int userId, String fridgeName) {
+    }
 }
