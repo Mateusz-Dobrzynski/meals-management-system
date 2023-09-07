@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DatabaseService {
     static String connectionInstanceName = "com.mysql.cj.jdbc.Driver";
-    static String jsonConfigFilePath = ".config\\establishConnectionWithDatabaseConfig.json";
+    static String jsonConfigFilePath = ".config\\.config";
     static String jsonUrlKey = "databaseJdbcUrl";
     static String jsonUsernameKey = "databaseUsername";
     static String jsonPasswordKey = "databasePassword";

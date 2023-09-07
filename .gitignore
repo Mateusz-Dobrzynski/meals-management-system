@@ -1,5 +1,5 @@
-# Configuration file
-establishConnectionWithDatabaseConfig.json
+# Configuration file (Temporary disabled for update reasons)
+.config
 
 # Compiled class file
 *.class

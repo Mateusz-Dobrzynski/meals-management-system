@@ -8,6 +8,7 @@ import org.junit.Test;
 public class EmailCheckTest {
     private RegistrationService registrationService = new RegistrationService();
 
+
     /**
      * Ensures that emailCheck returns true with valid emails
      */
