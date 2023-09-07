@@ -1,9 +1,12 @@
 package org.lookout_studios.meals_management_system.meals_management_system;
 
+import java.io.FileReader;
 import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -23,6 +26,10 @@ public class RegistrationService {
     private String validPasswordPattern = ".{8,}";
     private String validEmailPattern = "^[\\w+-]+(\\.[\\w+-]+)*[\\.]?[a-zA-Z0-9]@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
     private static String emailSubject = "Meals Managament System E-mail Verification";
+    private static String configFilePath = ".config\\.config";
+    private static String configProtocol = "protocol";
+    private static String configDomain = "domain";
+    private static String configPort = "port";
      //TO-DO: The verification link must be created automatically.
     /* "http://localhost:8080/verify?userId=24&registrationToken=null" */
     Logger log = LoggerFactory.getLogger(RegistrationService.class);
@@ -161,24 +168,33 @@ public class RegistrationService {
 
     /**
      * com.
+     * @throws Exception
      */
-    private String generateVerificationUrl(User user) {
+    private String generateVerificationUrl(User user) throws Exception {
         try {
-            // TO-DO: Take data from .config
-            String protocol = "http";
-            String host = "localhost";
-            int port = 8080;
+            JSONParser jsonParser = new JSONParser();
+            FileReader jsonFileDataReader = new FileReader(configFilePath);
+            JSONObject configData = (JSONObject) jsonParser.parse(jsonFileDataReader);
+    
+            // Retrieve values from the JSON config
+            String protocol = (String) configData.get(configProtocol);
+            String domain = (String) configData.get(configDomain);
+            int port = ((Long) configData.get(configPort)).intValue();
+     // You can set this to a value if needed
+            String authorisation = null;
             String path = "/verify";
-            String auth = null;
             String fragment = null;
             String id = String.valueOf(user.getUserId());
+    
             // Use the user's ID in the query parameter
             String query = "userId=" + id + "&registrationToken=" + user.generateRegistrationToken();
-            URI uri = new URI(protocol, auth, host, port, path, query, fragment);
+    
+            // Construct the URI using the config values
+            URI uri = new URI(protocol, authorisation, domain, port, path, query, fragment);
+    
             return uri.toString();
         } catch (Exception exception) {
-            exception.printStackTrace();
-            return null;
+            throw exception;
         }
     }
 }
