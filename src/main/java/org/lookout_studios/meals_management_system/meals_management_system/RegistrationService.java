@@ -1,5 +1,6 @@
 package org.lookout_studios.meals_management_system.meals_management_system;
 
+import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,8 +23,8 @@ public class RegistrationService {
     private String validPasswordPattern = ".{8,}";
     private String validEmailPattern = "^[\\w+-]+(\\.[\\w+-]+)*[\\.]?[a-zA-Z0-9]@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
     private static String emailSubject = "Meals Managament System E-mail Verification";
-    private String emailMessage = "To verify your e-mail click on the provided link: " + "http://localhost:8080/verify?userId=24&registrationToken=null"; //TO-DO: The verification link must be created automatically.
-
+     //TO-DO: The verification link must be created automatically.
+    /* "http://localhost:8080/verify?userId=24&registrationToken=null" */
     Logger log = LoggerFactory.getLogger(RegistrationService.class);
 
     /**
@@ -36,6 +37,7 @@ public class RegistrationService {
      */
     @PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
     public ResponseEntity<String> registerUser(@RequestBody User user) throws Exception {
+        String emailMessage = "To verify your e-mail click on the provided link: " + generateVerificationUrl(user);
         String userEmail = user.getEmail();
         log.info(String.format(
                 "New registration request for user with email '%s'",
@@ -154,6 +156,29 @@ public class RegistrationService {
             emailService.sendEmail(to, subject, text);
         } catch (BeansException exception) {
             exception.printStackTrace();
+        }
+    }
+
+    /**
+     * com.
+     */
+    private String generateVerificationUrl(User user) {
+        try {
+            // TO-DO: Take data from .config
+            String protocol = "http";
+            String host = "localhost";
+            int port = 8080;
+            String path = "/verify";
+            String auth = null;
+            String fragment = null;
+            String id = String.valueOf(user.getUserId());
+            // Use the user's ID in the query parameter
+            String query = "userId=" + id + "&registrationToken=" + user.generateRegistrationToken();
+            URI uri = new URI(protocol, auth, host, port, path, query, fragment);
+            return uri.toString();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return null;
         }
     }
 }
