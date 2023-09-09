@@ -14,6 +14,7 @@ CREATE TABLE `users` (
 CREATE TABLE `fridges` (
     `fridgeId` INT AUTO_INCREMENT NOT NULL,
     `userId` INT NOT NULL,
+    `fridgeName` varchar(30) NOT NULL,
     PRIMARY KEY (`fridgeId`),
     FOREIGN KEY (userId) REFERENCES users(userId)
 );

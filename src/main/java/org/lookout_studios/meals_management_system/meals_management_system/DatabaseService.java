@@ -38,7 +38,9 @@ public class DatabaseService {
      *                   established with establishConnection();
      * @throws Exception
      */
-    public ResultSet executeSelectQuery(String selectQuery, Connection connection) throws Exception {
+    public ResultSet executeSelectQuery(
+            String selectQuery,
+            Connection connection) throws Exception {
         /*
          * Create JSONParser object, so you can read configuration data from JSON file.
          */
@@ -63,7 +65,9 @@ public class DatabaseService {
      *         java.sql.Statement.execute() for further details
      * @throws Exception
      */
-    public boolean executeOtherQuery(String query, Connection connection) throws Exception {
+    public boolean executeOtherQuery(
+            String query,
+            Connection connection) throws Exception {
         boolean result = false;
         try {
             log.debug(String.format("Executing query %s", query));
@@ -141,10 +145,13 @@ public class DatabaseService {
     public void registerNewUser(User user) throws Exception {
         Connection connection = establishConnection();
         try {
-            executeOtherQuery(
-                    String.format(
-                            "INSERT INTO users (email, password, isVerified, registrationToken) VALUES (\"%s\", %d, false, \"%s\");",
-                            user.getEmail(), user.getPasswordHash(), user.getRegistrationToken()),
+            executeOtherQuery(String.format(
+                    """
+                            INSERT INTO users
+                            (email, password, isVerified, registrationToken)
+                            VALUES (\"%s\", %d, false, \"%s\");
+                                    """,
+                    user.getEmail(), user.getPasswordHash(), user.getRegistrationToken()),
                     connection);
         } catch (Exception exception) {
             throw exception;
@@ -152,7 +159,9 @@ public class DatabaseService {
         connection.close();
     }
 
-    public boolean verifyRegistrationToken(int userId, String registrationToken) throws Exception {
+    public boolean verifyRegistrationToken(
+            int userId,
+            String registrationToken) throws Exception {
         Connection connection = establishConnection();
         try {
             ResultSet result = executeSelectQuery(
@@ -195,6 +204,59 @@ public class DatabaseService {
         connection.close();
     }
 
-    public void createNewFridge(int userId, String fridgeName) {
+    /**
+     * Creates a new fridge and assigns it to a user
+     * 
+     * @param userId     Id of a fridge owner
+     * @param fridgeName Custom fridge name
+     * @throws Exception
+     */
+    public boolean createNewFridge(int userId, String fridgeName) throws Exception {
+        Connection connection = establishConnection();
+        if (!userExists(userId, connection)) {
+            return false;
+        }
+        try {
+            executeOtherQuery(String.format("""
+                    INSERT INTO fridges(fridgeName, userId)
+                    SELECT "%s", userId FROM users WHERE userId = %d
+                    LIMIT 1;
+                    """,
+                    fridgeName,
+                    userId),
+                    connection);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return true;
+    }
+
+    /**
+     * Checks if a user with a given ID is present in the database
+     * 
+     * @param userId     ID of a user to be searched for
+     * @param connection Connection object returned by establishConnection() method
+     * @return True if user exists, false if they don't
+     * @throws Exception
+     */
+    private boolean userExists(int userId, Connection connection) throws Exception {
+        try {
+            ResultSet result = executeSelectQuery(String.format("""
+
+                    """,
+                    userId),
+                    connection);
+            if (!result.next()) {
+                log.info(String.format(
+                        """
+                                User with ID %d does not exist
+                                """), userId);
+                return false;
+            }
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw exception;
+        }
+        return true;
     }
 }
