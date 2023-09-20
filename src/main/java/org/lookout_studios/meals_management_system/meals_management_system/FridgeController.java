@@ -51,7 +51,7 @@ public class FridgeController {
             @RequestParam String userToken,
             @RequestParam String refreshToken,
             @RequestParam int userId,
-            @RequestParam String fridgeName) {
+            @RequestParam String fridgeName) throws Exception {
         log.info(String.format("""
                 Fridge creation request for user with id %d,
                 fridge name: %s", userId, fridgeName
