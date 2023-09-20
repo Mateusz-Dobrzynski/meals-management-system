@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -42,25 +43,23 @@ public class FridgeController {
     @PostMapping(value = "/fridge/create", consumes = "application/json", produces = "application/json")
     @Tag(name = "fridge")
     @Operation(summary = requestSummary, description = requestDescription)
-    @Parameter(name = "userToken", required = true, description = userTokenDescription)
-    @Parameter(name = "refreshToken", required = true, description = refreshTokenDescription)
     @ApiResponse(responseCode = okResponseCode, description = okDescriptionTemplate, content = @Content)
     @ApiResponse(responseCode = forbiddenResponseCode, description = forbiddenDescription, content = @Content)
     @ApiResponse(responseCode = serverErrorResponseCode, description = serverErrorDescriptionTemplate, content = @Content)
     public ResponseEntity<String> createFridge(
-            @RequestParam String userToken,
-            @RequestParam String refreshToken,
-            @RequestParam int userId,
-            @RequestParam String fridgeName) throws Exception {
+        @RequestBody FridgeCreationRequest fridgeCreationRequest) throws Exception {
+        int userId = fridgeCreationRequest.getUserId();
+        String fridgeName = fridgeCreationRequest.getFridgeName();
         log.info(String.format("""
-                Fridge creation request for user with id %d,
-                fridge name: %s", userId, fridgeName
-                """));
+            Fridge creation request for user with id %d, fridge name: %s"
+            """,
+            userId, fridgeName));
+        // TO-DO: fix bad values of userId and fridge name (always 0 and null)
         // TO-DO: check validity of user and refresh tokens
         DatabaseService database = new DatabaseService();
         database.createNewFridge(userId, fridgeName);
         return new ResponseEntity<String>(
-                new ResponseBody(HttpStatus.OK).getResponseBody(),
-                HttpStatus.OK);
+            new ResponseBody(HttpStatus.OK).getResponseBody(),
+            HttpStatus.OK);
     }
 }

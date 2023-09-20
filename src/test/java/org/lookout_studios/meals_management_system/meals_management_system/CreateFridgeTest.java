@@ -85,7 +85,6 @@ public class CreateFridgeTest {
         String responseBody = new ResponseBody(HttpStatus.UNAUTHORIZED).getResponseBody();
 
         // TO-DO: Mock a token check that will fail
-        String reqString = requestBody.toString();
         WireMock.stubFor(post(urlEqualTo(requestPath))
                 .withRequestBody(WireMock.equalToJson(requestBody.toString()))
                 .willReturn(WireMock.aResponse()

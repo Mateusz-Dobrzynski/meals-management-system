@@ -137,6 +137,31 @@ public class DatabaseService {
     }
 
     /**
+     * Checks if a user with a given id is present in the database
+     * 
+     * @param id of a user
+     * @param connection Connection object obtained by EstablishConnection() in a parent method
+     * @return true if an email is found in the database, false if it isn't
+     * @throws Exception
+     */
+    public boolean isUserRegistered(int userId, Connection connection) throws Exception {
+        try {
+            ResultSet result = executeSelectQuery(String.format(
+            "SELECT u.userId FROM users u WHERE u.userId = %s;",
+             userId),
+             connection);
+             if (!result.next()) {
+                connection.close();
+                return false;
+             }
+        }
+        catch (Exception exception) {
+            throw exception;
+        }
+        return true;
+    }
+
+    /**
      * Registers new user in the database
      * 
      * @param user A user object representing a user to be registered
@@ -213,7 +238,7 @@ public class DatabaseService {
      */
     public boolean createNewFridge(int userId, String fridgeName) throws Exception {
         Connection connection = establishConnection();
-        if (!userExists(userId, connection)) {
+        if (!isUserRegistered(userId, connection)) {
             return false;
         }
         try {
@@ -227,35 +252,6 @@ public class DatabaseService {
                     connection);
         } catch (Exception exception) {
             exception.printStackTrace();
-        }
-        return true;
-    }
-
-    /**
-     * Checks if a user with a given ID is present in the database
-     * 
-     * @param userId     ID of a user to be searched for
-     * @param connection Connection object returned by establishConnection() method
-     * @return True if user exists, false if they don't
-     * @throws Exception
-     */
-    private boolean userExists(int userId, Connection connection) throws Exception {
-        try {
-            ResultSet result = executeSelectQuery(String.format("""
-
-                    """,
-                    userId),
-                    connection);
-            if (!result.next()) {
-                log.info(String.format(
-                        """
-                                User with ID %d does not exist
-                                """), userId);
-                return false;
-            }
-        } catch (Exception exception) {
-            log.error(exception.getMessage());
-            throw exception;
         }
         return true;
     }
