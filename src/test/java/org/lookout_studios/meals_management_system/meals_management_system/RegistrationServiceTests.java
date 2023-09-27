@@ -2,17 +2,12 @@ package org.lookout_studios.meals_management_system.meals_management_system;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.client.ResponseErrorHandler;
-import org.springframework.web.client.RestTemplate;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -24,22 +19,12 @@ import net.minidev.json.JSONObject;
 class RegistrationServiceTests {
 
     static WireMockServer wireMockServer = new WireMockServer();
-    private static RestTemplate restTemplate = new RestTemplate();
+    private static TestRestTemplate restTemplate = new TestRestTemplate();
 
     @BeforeAll
     public static void beforeAll() {
         WireMock.configureFor(8080);
         wireMockServer.start();
-        restTemplate.setErrorHandler(new ResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) throws IOException {
-                return false;
-            }
-
-            @Override
-            public void handleError(ClientHttpResponse response) throws IOException {
-            }
-        });
     }
 
     @AfterAll
