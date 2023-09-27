@@ -3,6 +3,7 @@ package org.lookout_studios.meals_management_system.meals_management_system;
 import java.io.IOException;
 
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,5 +25,6 @@ public class TestRestTemplate extends RestTemplate {
             public void handleError(ClientHttpResponse response) throws IOException {
             }
         });
+        this.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
     }
 }

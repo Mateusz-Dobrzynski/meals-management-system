@@ -12,6 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -45,23 +46,24 @@ public class CreateFridgeTest {
         String requestPath = "/fridge/create";
         String requestUrl = "http://localhost:8080/fridge/create";
         int userId = 2137;
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("userId", userId);
-        requestBody.put("userToken", userToken);
-        requestBody.put("refreshToken", refreshToken);
-        requestBody.put("customFridgeName", customFridgeName);
+        JSONObject requestJson = new JSONObject();
+        requestJson.put("userId", userId);
+        requestJson.put("userToken", userToken);
+        requestJson.put("refreshToken", refreshToken);
+        requestJson.put("customFridgeName", customFridgeName);
+        HttpEntity<String> requestString = new HttpEntity<String>(requestJson.toString()); 
 
         String responseBody = new ResponseBody(HttpStatus.OK).getResponseBody();
 
         // TO-DO: Mock a successful token check
 
         WireMock.stubFor(post(urlEqualTo(requestPath))
-                .withRequestBody(WireMock.equalToJson(requestBody.toString()))
+                .withRequestBody(WireMock.equalToJson(requestJson.toString()))
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withBody(responseBody)));
 
-        response = restTemplate.postForEntity(requestUrl, requestBody, String.class);
+        response = restTemplate.postForEntity(requestUrl, requestString, String.class);
         assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
     }
 
@@ -72,26 +74,29 @@ public class CreateFridgeTest {
     public void createFridgeInvalidTokens() {
         ResponseEntity<String> response = null;
         String userToken = "1@qwerty";
-        String refreshToken = "Q!W@E#r4t5y6";
+        String refreshToken = "invalid";
         String customFridgeName = "Just chillin'";
         String requestPath = "/fridge/create";
         String requestUrl = "http://localhost:8080/fridge/create";
         int userId = 2137;
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("userId", userId);
-        requestBody.put("userToken", userToken);
-        requestBody.put("refreshToken", refreshToken);
-        requestBody.put("customFridgeName", customFridgeName);
+        JSONObject requestJson = new JSONObject();
+        requestJson.put("userId", userId);
+        requestJson.put("userToken", userToken);
+        requestJson.put("refreshToken", refreshToken);
+        requestJson.put("customFridgeName", customFridgeName);
+        HttpEntity<String> requestString = new HttpEntity<String>(requestJson.toString()); 
+
         String responseBody = new ResponseBody(HttpStatus.UNAUTHORIZED).getResponseBody();
 
-        // TO-DO: Mock a token check that will fail
+        // TO-DO: Mock a successful token check
+
         WireMock.stubFor(post(urlEqualTo(requestPath))
-                .withRequestBody(WireMock.equalToJson(requestBody.toString()))
+                .withRequestBody(WireMock.equalToJson(requestJson.toString()))
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.UNAUTHORIZED.value())
                         .withBody(responseBody)));
 
-        response = restTemplate.postForEntity(requestUrl, requestBody, String.class);
+        response = restTemplate.postForEntity(requestUrl, requestString, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode().value());
     }
 }
