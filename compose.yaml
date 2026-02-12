@@ -1,0 +1,21 @@
+# Use root/example as user/password credentials
+
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: fridge
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+    - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - dbnetwork
+
+volumes:
+  dbdata:
+
+networks:
+  dbnetwork:
